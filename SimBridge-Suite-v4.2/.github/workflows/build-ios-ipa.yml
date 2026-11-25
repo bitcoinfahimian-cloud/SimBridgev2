@@ -1,0 +1,52 @@
+name: Build SimBridge iOS IPA
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'ios/**'
+      - '.github/workflows/build-ios-ipa.yml'
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build Unsigned iOS App
+        working-directory: ios
+        run: |
+          xcodebuild \
+            -project SimBridgeiOS.xcodeproj \
+            -scheme SimBridgeiOS \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package Unsigned IPA
+        working-directory: ios
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/SimBridgeiOS.app Payload/
+          zip -r SimBridgeiOS-Unsigned.ipa Payload
+
+      - name: Upload Unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimBridgeiOS-v4-Unsigned-IPA
+          path: ios/SimBridgeiOS-Unsigned.ipa
+          retention-days: 30

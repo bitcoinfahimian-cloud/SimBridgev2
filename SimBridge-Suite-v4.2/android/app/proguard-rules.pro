@@ -1,0 +1,4 @@
+-keep class com.simbridge.app.IShellTap { *; }
+-keep class com.simbridge.app.IShellTap$** { *; }
+-keep class com.simbridge.app.shell.ShellMain { *; }
+-keep class com.simbridge.app.shell.ShellTapImpl { *; }

@@ -1,0 +1,23 @@
+﻿# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Xcode / Swift
+xcuserdata/
+DerivedData/
+*.xcuserstate
+.build/
+Pods/
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+*.keystore
+*.jks
+
+# Archives and local tool state
+*.zip
+.claude/settings.local.json

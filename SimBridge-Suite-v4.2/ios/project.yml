@@ -1,0 +1,36 @@
+name: SimBridgeiOS
+options:
+  bundleIdPrefix: com.simbridge
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "15.4"
+
+targets:
+  SimBridgeiOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    info:
+      path: Resources/Info.plist
+      properties:
+        CFBundleDisplayName: SimBridge
+        CFBundleShortVersionString: "1.4.0"
+        CFBundleVersion: "6"
+        UILaunchScreen:
+          UIColorName: ""
+        UIBackgroundModes:
+          - bluetooth-central
+          - audio
+          - voip
+        NSBluetoothAlwaysUsageDescription: "SimBridge connects directly to your paired Android phone over encrypted Bluetooth to deliver incoming SIM calls and SMS."
+        NSMicrophoneUsageDescription: "SimBridge uses your iPhone microphone to send your voice into calls answered through your paired Android phone."
+        NSCameraUsageDescription: "SimBridge uses the camera to scan the pairing QR code displayed on your Android phone."
+        NSLocalNetworkUsageDescription: "SimBridge streams encrypted two-way call audio over local Wi-Fi or Hotspot between your Android phone and iPhone."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.simbridge.ios
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
+        GENERATE_INFOPLIST_FILE: NO
