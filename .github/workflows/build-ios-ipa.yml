@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -27,6 +27,7 @@ jobs:
 
       - name: Build Unsigned iOS App
         run: |
+          set -o pipefail
           xcodebuild \
             -project SimBridgeiOS.xcodeproj \
             -scheme SimBridgeiOS \
@@ -36,7 +37,13 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            build
+            build 2>&1 | tee xcodebuild.log || {
+            # Surface compiler errors as an annotation so they show on the run summary page.
+            msg=$(grep -E "error:" xcodebuild.log | sed 's|^.*/Sources/|Sources/|' | sort -u | head -n 60 \
+              | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=xcodebuild errors::${msg:-no error: lines found, see full log}"
+            exit 1
+          }
 
       - name: Package Unsigned IPA
         run: |
