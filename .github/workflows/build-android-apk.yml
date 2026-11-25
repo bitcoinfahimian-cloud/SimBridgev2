@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'android/**'
+      - 'SimBridge-Suite-v4.2/android/**'
       - '.github/workflows/build-android-apk.yml'
   workflow_dispatch:
 
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: android
+        working-directory: SimBridge-Suite-v4.2/android
 
     steps:
       - name: Checkout repository
@@ -37,5 +37,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SimBridge-Android-v4-Debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: SimBridge-Suite-v4.2/android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
