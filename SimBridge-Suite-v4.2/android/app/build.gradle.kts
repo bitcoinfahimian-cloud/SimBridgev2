@@ -19,7 +19,30 @@ android {
         }
     }
 
+    // A fixed signing key keeps every build installable over the previous one.
+    // CI decodes it from repository secrets; locally it falls back to ~/.simbridge-signing.
+    val signingDir = File(System.getProperty("user.home"), ".simbridge-signing")
+    val keystorePath = System.getenv("SIMBRIDGE_KEYSTORE_FILE")
+        ?: File(signingDir, "simbridge.jks").takeIf { it.exists() }?.path
+    val keystorePassword = System.getenv("SIMBRIDGE_KEYSTORE_PASSWORD")
+        ?: File(signingDir, "ANDROID_KEYSTORE_PASSWORD.txt").takeIf { it.exists() }?.readText()?.trim()
+
+    signingConfigs {
+        if (keystorePath != null && keystorePassword != null) {
+            create("simbridge") {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                keyAlias = "simbridge"
+                keyPassword = keystorePassword
+            }
+        }
+    }
+
     buildTypes {
+        signingConfigs.findByName("simbridge")?.let { fixedKey ->
+            getByName("debug") { signingConfig = fixedKey }
+            getByName("release") { signingConfig = fixedKey }
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
