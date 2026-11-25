@@ -58,7 +58,7 @@ class AdbTlsClient(private val context: Context) {
             override fun getClientAliases(k: String?, i: Array<out java.security.Principal>?) = arrayOf("adb")
             override fun chooseClientAlias(k: Array<out String>?, i: Array<out java.security.Principal>?, s: Socket?) = "adb"
             override fun getServerAliases(k: String?, i: Array<out java.security.Principal>?) = null
-            override fun chooseServerAlias(k: Array<out String>?, i: Array<out java.security.Principal>?, s: Socket?) = null
+            override fun chooseServerAlias(k: String?, i: Array<out java.security.Principal>?, s: Socket?): String? = null
             override fun getCertificateChain(alias: String?): Array<X509Certificate> = arrayOf(cert)
             override fun getPrivateKey(alias: String?): PrivateKey = privKey
         }

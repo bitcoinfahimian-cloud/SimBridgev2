@@ -236,7 +236,7 @@ class CallAudioStreamServer(
                 val frame = uplinkJitterBuffer.remove(nextExpectedUplinkSeq)
                 if (frame != null) {
                     nextExpectedUplinkSeq++
-                    runCatching { pipeOut.write(frame) }.onFailure { break }
+                    if (runCatching { pipeOut.write(frame) }.isFailure) break
                 } else {
                     val firstAvail = uplinkJitterBuffer.firstEntry()
                     if (firstAvail != null &&
@@ -246,9 +246,9 @@ class CallAudioStreamServer(
                         // Missing packet was lost; advance playout cursor to next contiguous buffered frame
                         nextExpectedUplinkSeq = firstAvail.key + 1
                         val nextPcm = uplinkJitterBuffer.remove(firstAvail.key) ?: silence
-                        runCatching { pipeOut.write(nextPcm) }.onFailure { break }
+                        if (runCatching { pipeOut.write(nextPcm) }.isFailure) break
                     } else {
-                        runCatching { pipeOut.write(silence) }.onFailure { break }
+                        if (runCatching { pipeOut.write(silence) }.isFailure) break
                     }
                 }
                 // Absolute-time pacing: no cumulative drift from write/GC time

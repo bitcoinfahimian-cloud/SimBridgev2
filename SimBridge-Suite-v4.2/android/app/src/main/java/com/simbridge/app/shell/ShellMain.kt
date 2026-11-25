@@ -303,7 +303,7 @@ class ShellTapImpl(private val shellContext: Context?) : IShellTap.Stub() {
             runCatching { downlinkRecord?.startRecording() }
             while (running.get()) {
                 val n = downlinkRecord?.read(buf, 0, buf.size) ?: -1
-                if (n > 0) runCatching { out.write(buf, 0, n) }.onFailure { break }
+                if (n > 0 && runCatching { out.write(buf, 0, n) }.isFailure) break
             }
             runCatching { out.close(); downPipe[1].close() }
         }.start()

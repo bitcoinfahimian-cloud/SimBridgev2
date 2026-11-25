@@ -45,8 +45,8 @@ final class CallKitManager: NSObject, ObservableObject {
 
     init(audioClient: UdpCallAudioClient) {
         self.audioClient = audioClient
+        // localizedName is read-only on current SDKs; CallKit takes it from the bundle display name.
         let config = CXProviderConfiguration()
-        config.localizedName = "SimBridge"
         config.supportsVideo = false
         config.maximumCallsPerCallGroup = 1
         config.maximumCallGroups = 1
